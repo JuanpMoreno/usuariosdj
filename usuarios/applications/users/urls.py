@@ -18,4 +18,7 @@ urlpatterns = [
     path('update/',
     views.UpdatePasswordView.as_view(),
     name = 'user-update'),
+    path('user-verification',
+    views.CodeVerificacionView.as_view(),
+    name='user-verification'),
 ]

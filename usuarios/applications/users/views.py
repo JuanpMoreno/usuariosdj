@@ -18,7 +18,7 @@ from django.views.generic import (
     CreateView
 )
 from django.views.generic.edit import FormView
-from .forms import UserRegisterForm, LoginForm, UpdatePasswordForm
+from .forms import UserRegisterForm, LoginForm, UpdatePasswordForm, VerificationForm
 
 #Importando manager y modelo
 from .models import User
@@ -44,21 +44,22 @@ class UserRegisterView(FormView):
             nombres = form.cleaned_data['nombres'],
             apellidos = form.cleaned_data['apellidos'],
             genero = form.cleaned_data['genero'],
-            codregistro = codigo
+            #codregistro = codigo
         )
+        return super(UserRegisterView, self).form_valid(form)
         #Enviar el codigo al email del usuario
-        asunto = 'Confirmacion de E-mail'
-        mensaje = 'Codigo de verificacion: ' + codigo
-        email_remitente = 'juanpmufc9508@gmail.com'
+        #asunto = 'Confirmacion de E-mail'
+        #mensaje = 'Codigo de verificacion: ' + codigo
+        #email_remitente = 'juanpmufc9508@gmail.com'
         #
-        send_mail(asunto, mensaje, email_remitente, [form.cleaned_data['email'],])
+        #send_mail(asunto, mensaje, email_remitente, [form.cleaned_data['email'],])
         #Redirigir a pantalla de validacion
         
-        return HttpResponseRedirect(#Redirige al usuario a otro lado
-            reverse(
-                'users_app:user-login'
-            )
-        )
+        #return HttpResponseRedirect(#Redirige al usuario a otro lado
+        #    reverse(
+        #        'users_app:user-login'
+        #    )
+        #)
 
 #Clase que hara el login del usuarios
 class LoginUser(FormView):
@@ -110,3 +111,13 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
         logout(self.request)
         return super(UpdatePasswordView, self).form_valid(form)
 
+
+#Vista de verificacion de codigo
+class CodeVerificacionView(FormView):
+    template_name = 'users/verification.html'
+    form_class = VerificationForm
+    success_url = reverse_lazy('users_app:user-login')
+
+    def form_valid(self, form):
+        
+        return super(CodeVerificacionView, self).form_valid(form)
